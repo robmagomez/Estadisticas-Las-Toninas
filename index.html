@@ -290,45 +290,43 @@
 
     </div>
 
-    <!-- LÓGICA DE PROCESAMIENTO ESTADÍSTICO -->
+   
+        
+
+    <!-- SCRIPT LOGICO COMPLETO Y UNIFICADO -->
     <script>
+        // CONFIGURACIÓN: Tu URL pública de Google Sheets en formato CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQO8umHK3ldtXP_1sau24mw0tywHAgQA4jlQlxyI847DAuF-4k7YETRvHnb8dCuSxo0_smo3UYkrn2e/pub?output=csv";
 
-        // Estructuras de almacenamiento global
         let listadoGoleadores = {};
         let listadoArqueros = {};
         let statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
 
-        // Navegación de Perfiles
         function switchProfile(profile) {
             document.getElementById('profile-viewer').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('tabs-menu').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('profile-admin').classList.toggle('hidden', profile !== 'admin');
             
-            document.getElementById('btn-view').className = profile === 'viewer' ? "bg-blue-600 px-3 py-1.5 rounded text-sm font-semibold" : "bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded text-sm font-semibold transition";
-            document.getElementById('btn-admin').className = profile === 'admin' ? "bg-blue-600 px-3 py-1.5 rounded text-sm font-semibold" : "bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded text-sm font-semibold transition";
+            document.getElementById('btn-view').classList.toggle('btn-active', profile === 'viewer');
+            document.getElementById('btn-admin').classList.toggle('btn-active', profile === 'admin');
             if(profile === 'viewer') fetchAndCalculate();
         }
 
-        // Navegación de Pestañas Internas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
             document.getElementById(`pane-${tabId}`).classList.remove('hidden');
             
-            document.querySelectorAll('#tabs-menu button').forEach(el => {
-                el.className = "text-gray-500 hover:text-blue-600 px-3 py-1";
-            });
-            document.getElementById(`tab-${tabId}`).className = "text-blue-600 border-b-2 border-blue-600 px-3 py-1";
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-                 async function fetchAndCalculate() {
+        async function fetchAndCalculate() {
             if(!SHEET_CSV_URL || SHEET_CSV_URL.startsWith("TU_")) return;
 
             try {
-                const response = await fetch(SHEET_CSV_URL);
+                const response = await fetch(SHEET_CSV_URL + "&t=" + new Date().getTime()); // Evita que el navegador congele los datos viejos
                 const data = await response.text();
                 
-                // Separar el texto del Excel por filas
                 const rows = data.split(/\r?\n/).slice(1);
 
                 listadoGoleadores = {}; 
@@ -340,9 +338,8 @@
                 rows.forEach(row => {
                     if (!row.trim()) return;
                     
-                    // Separar columnas por comas respetando comillas
                     const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
-                    if (cols.length < 8) return; // Salta filas incompletas
+                    if (cols.length < 8) return; 
                     
                     const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
 
@@ -401,7 +398,6 @@
                     partidosProcesados++;
                 });
 
-                // Si no hay datos, mostramos un aviso limpio en vez de trabar la web
                 if (partidosProcesados === 0) {
                     document.getElementById('table-partidos').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:2rem;">La planilla está conectada con éxito, pero aún no has registrado ningún partido en tu Google Sheets.</td></tr>`;
                 } else {
@@ -418,7 +414,54 @@
             }
         }
 
-fetchAndCalculate();
-  </script>
+        function renderGoleadores() {
+            const sorted = Object.entries(listadoGoleadores).sort((a,b) => b[1] - a[1]);
+            document.getElementById('table-goleadores').innerHTML = sorted.map(([name, goles]) => `
+                <tr><td><b>${name}</b></td><td style="text-align: center; font-weight: bold; color:#2563eb; font-size:1.1rem;">${goles}</td></tr>
+            `).join('');
+        }
+
+        function renderArqueros() {
+            const sorted = Object.entries(listadoArqueros).sort((a,b) => (a[1].gc / a[1].pj) - (b[1].gc / b[1].pj));
+            document.getElementById('table-arqueros').innerHTML = sorted.map(([name, d]) => `
+                <tr>
+                    <td><b>${name}</b></td>
+                    <td style="text-align: center;">${d.pj.toFixed(1)}</td>
+                    <td style="text-align: center; color:var(--rojo-fc);">${d.gc}</td>
+                    <td style="text-align: center; font-weight: bold; background:#f8fafc; color:#0f172a;">${(d.gc / d.pj).toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderEquipos() {
+            document.getElementById('cards-equipos').innerHTML = ['Rojo', 'Amarillo'].map(color => {
+                const e = statsEquipos[color];
+                const cls = color === 'Rojo' ? 'team-rojo' : 'team-amarillo';
+                return `
+                    <div class="card card-team ${cls}">
+                        <h3 style="margin:0; font-size:1.2rem;">Equipo ${color}</h3>
+                        <div class="grid-stats-mini">
+                            <div class="stat-box"><b>${e.PJ}</b>PJ</div>
+                            <div class="stat-box" style="background:#dcfce7; color:#166534;"><b>${e.PG}</b>PG</div>
+                            <div class="stat-box" style="background:#fef9c3; color:#854d0e;"><b>${e.PE}</b>PE</div>
+                            <div class="stat-box" style="background:#fee2e2; color:#991b1b;"><b>${e.PP}</b>PP</div>
+                            <div class="stat-box"><b>${e.GF}</b>GF</div>
+                            <div class="stat-box"><b>${e.GC}</b>GC</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function handleFormSubmit() {
+            alert("⚽ ¡Estadísticas guardadas con éxito!");
+            document.getElementById('football-form').reset();
+            setTimeout(() => { switchProfile('viewer'); }, 500);
+        }
+
+        window.onload = fetchAndCalculate;
+    </script>
+</body>
+</html>
+
 </body>
 </html>
