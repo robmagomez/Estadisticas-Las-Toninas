@@ -238,46 +238,47 @@
             </section>
         </div>
 
-                <!-- ================= PERFIL CARGA (ADMIN) ================= -->
+                 <!-- ================= PERFIL CARGA (ADMIN) ================= -->
         <div id="profile-admin" class="card hidden" style="max-width: 500px; margin: 0 auto;">
             <h2>📝 Registrar Partido del Sábado</h2>
             
-            <form id="football-form" action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfUJL5yyEfi7N9NFpV-YfstvCcvL8aoXl5dj6Cs9WJMfM_mSw/formResponse" method="POST" target="_hidden_iframe" onsubmit="handleFormSubmit()">
+            <!-- REEMPLAZA ESTE ACTION CON TU URL DE APPS SCRIPT COPIADA -->
+            <form id="football-form" action="https://script.google.com/macros/s/AKfycbyr2U7l-3WHpMtSs0mC-HehipxikTwsIckFa5cf7S7Zz23ZnY3KebsaX7gvhQfs7X7GHQ/exec" onsubmit="handleFormSubmit()">
                 
                 <div class="form-group">
                     <label>Fecha del Encuentro</label>
-                    <input type="date" name="Fecha Partido" required class="form-control">
+                    <input type="date" name="fecha" required class="form-control">
                 </div>
 
                 <div class="form-group">
                     <label style="color:var(--rojo-fc)">Goleadores Rojo (Separados por comas)</label>
-                    <input type="text" name="Goles Jugadores Rojos" placeholder="Ej: Carlos, Carlos, Miguel" class="form-control">
+                    <input type="text" name="goleadoresRojo" placeholder="Ej: Carlos, Carlos, Miguel" class="form-control">
                 </div>
 
                 <div class="form-group">
                     <label style="color:var(--amarillo-fc)">Goleadores Amarillo (Separados por comas)</label>
-                    <input type="text" name="Goles Jugadores Amarillos" placeholder="Ej: Juan, Luis" class="form-control">
+                    <input type="text" name="goleadoresAmarillo" placeholder="Ej: Juan, Luis" class="form-control">
                 </div>
 
                 <div class="grid-2">
                     <div class="form-group">
                         <label style="color:var(--rojo-fc)">Arquero(s) Rojo</label>
-                        <input type="text" name="Arqueros Rojos" placeholder="Ej: Pedro, Carlos" required class="form-control">
+                        <input type="text" name="arquerosRojo" placeholder="Ej: Pedro, Carlos" required class="form-control">
                     </div>
                     <div class="form-group">
-                        <label style="color:var(--rojo-fc)">Goles Recibidos c/ Arquero Rojo</label>
-                        <input type="text" name="Goles Recibidos Rojos" placeholder="Ej: 1, 2" required class="form-control">
+                        <label style="color:var(--rojo-fc)">Goles Recibidos c/u</label>
+                        <input type="text" name="golesRojo" placeholder="Ej: 1, 2" required class="form-control">
                     </div>
                 </div>
 
                 <div class="grid-2">
                     <div class="form-group">
                         <label style="color:var(--amarillo-fc)">Arquero(s) Amarillo</label>
-                        <input type="text" name="Arqueros Amarillos" placeholder="Ej: Lucas" required class="form-control">
+                        <input type="text" name="arquerosAmarillo" placeholder="Ej: Lucas" required class="form-control">
                     </div>
                     <div class="form-group">
-                        <label style="color:var(--amarillo-fc)">Goles Recibidos c/ Arquero Amarillo</label>
-                        <input type="text" name="Goles Recibidos Amarillos" placeholder="Ej: 4" required class="form-control">
+                        <label style="color:var(--amarillo-fc)">Goles Recibidos c/u</label>
+                        <input type="text" name="golesAmarillo" placeholder="Ej: 4" required class="form-control">
                     </div>
                 </div>
 
@@ -285,6 +286,7 @@
             </form>
             <iframe name="_hidden_iframe" id="_hidden_iframe" style="display:none;"></iframe>
         </div>
+
 
     </div>
 
