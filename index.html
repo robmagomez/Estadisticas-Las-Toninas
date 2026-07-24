@@ -302,7 +302,21 @@
         let listadoArqueros = {};
         let statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
 
-        function switchProfile(profile) {
+               function switchProfile(profile) {
+            if (profile === 'admin') {
+                // CONFIGURACIÓN: Cambia "toninas2026" por la contraseña que tú quieras
+                const contrasenaCorrecta = "toninas2026"; 
+                
+                const intento = prompt("🔒 Ingrese la contraseña de administrador para cargar datos:");
+                
+                if (intento !== contrasenaCorrecta) {
+                    alert("❌ Contraseña incorrecta. Acceso denegado.");
+                    switchProfile('viewer'); // Te regresa de forma segura a la vista simple
+                    return;
+                }
+            }
+
+            // Si pasa la validación o elige ver datos, hace el cambio de pantalla normal
             document.getElementById('profile-viewer').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('tabs-menu').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('profile-admin').classList.toggle('hidden', profile !== 'admin');
