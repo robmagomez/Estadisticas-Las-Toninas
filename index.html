@@ -155,9 +155,14 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav>
-        <img src="Calco.png" width="50" height="50" />
-        <h1> Estadísticas Las Toninas</h1>
+     <nav>
+        <!-- Contenedor para mantener juntos el logo y el título -->
+        <div style="display: flex; align-items: center;">
+            <img src="Calco.png" width="50" height="50" style="margin-right: 0.75rem;" />
+            <h1 style="margin: 0;">Estadísticas Las Toninas (un futbol distinto)</h1>
+        </div>
+        
+        <!-- Botones de navegación a la derecha -->
         <div style="display: flex; gap: 0.5rem;">
             <button onclick="switchProfile('viewer')" id="btn-view" class="btn btn-active">Vista Simple</button>
             <button onclick="switchProfile('admin')" id="btn-admin" class="btn">Cargar Datos</button>
