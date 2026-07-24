@@ -321,100 +321,87 @@
             document.getElementById(`tab-${tabId}`).className = "text-blue-600 border-b-2 border-blue-600 px-3 py-1";
         }
 
-        async function fetchAndCalculate() {
-    if(SHEET_CSV_URL.startsWith("TU_")) return;
+                async function fetchAndCalculate() {
+            // =================================================================
+            // DETECTOR DE PRUEBA: Datos simulados para verificar el funcionamiento
+            // =================================================================
+            const datosSimuladosCSV = [
+                "24/07/2026, Carlos, Miguel, Pedro, 1, Lucas, 2",
+                "25/07/2026, Carlos\\, Carlos\\, Miguel, Juan, Pedro\\, Carlos, 1\\, 0, Lucas, 3"
+            ];
+            // =================================================================
 
-    try {
-        const response = await fetch(SHEET_CSV_URL);
-        const data = await response.text();
-        const rows = data.split('\n').slice(1);
+            listadoGoleadores = {}; 
+            listadoArqueros = {};
+            statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
+            let htmlPartidos = '';
+            let partidosProcesados = 0;
 
-        // Reiniciar contadores globales
-        listadoGoleadores = {}; 
-        listadoArqueros = {};
-        statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
-        
-        let htmlPartidos = '';
+            // Procesamos los datos simulados en lugar de la red para verificar la visual
+            datosSimuladosCSV.forEach(row => {
+                if (!row.trim()) return;
+                
+                const cols = row.split(',');
+                if (cols.length < 7) return; 
+                
+                const fecha         = cols[0].trim();
+                const txtGolesRojo  = cols[1].replace(/\\/g, ',').trim();
+                const txtGolesAmar  = cols[2].replace(/\\/g, ',').trim();
+                const txtArqRojo    = cols[3].replace(/\\/g, ',').trim();
+                const txtGcRojo     = cols[4].replace(/\\/g, ',').trim();
+                const txtArqAmar    = cols[5].replace(/\\/g, ',').trim();
+                const txtGcAmar     = cols[6].replace(/\\/g, ',').trim();
 
-        rows.forEach(row => {
-            if (!row.trim()) return;
-            const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
-            const clean = cols.map(c => c.replace(/^"| font-semibold"$/g, '').trim());
+                const namesRojo     = txtGolesRojo ? txtGolesRojo.split(',') : [];
+                const namesAmarillo = txtGolesAmar ? txtGolesAmar.split(',') : [];
+                
+                const arqRojoLista     = txtArqRojo.split(',').map(n => n.trim());
+                const gcRojoLista      = txtGcRojo.split(',').map(n => parseInt(n.trim()) || 0);
+                const arqAmarilloLista = txtArqAmar.split(',').map(n => n.trim());
+                const gcAmarilloLista  = txtGcAmar.split(',').map(n => parseInt(n.trim()) || 0);
 
-            // 1. ASIGNACIÓN DE COLUMNAS (Ajusta los índices [X] según tu orden real en Sheets)
-            const fecha = clean[1] || '-';
-            const namesRojo = clean[2] ? clean[2].split(',') : [];
-            const namesAmarillo = clean[3] ? clean[3].split(',') : [];
-            
-            // Cadenas de texto con comas desde la planilla
-            const txtArqRojo = clean[4] || 'Desconocido';
-            const txtGcRojo  = clean[5] || '0';
-            const txtArqAmarillo = clean[6] || 'Desconocido';
-            const txtGcAmarillo  = clean[7] || '0';
+                const gAmarillo = gcRojoLista.reduce((a, b) => a + b, 0); 
+                const gRojo     = gcAmarilloLista.reduce((a, b) => a + b, 0); 
 
-            // Convertir textos de comas en listas (Arrays)
-            const arqRojoLista = txtArqRojo.split(',').map(n => n.trim());
-            const gcRojoLista  = txtGcRojo.split(',').map(n => parseInt(n.trim()) || 0);
-            
-            const arqAmarilloLista = txtArqAmarillo.split(',').map(n => n.trim());
-            const gcAmarilloLista  = txtGcAmarillo.split(',').map(n => parseInt(n.trim()) || 0);
+                htmlPartidos += `
+                    <tr>
+                        <td style="color:#64748b; font-weight:500;">${fecha}</td>
+                        <td style="text-align: right; font-weight: 600; color:var(--rojo-fc);">${txtArqRojo}</td>
+                        <td style="text-align: center;"><span class="badge-score">${gRojo} - ${gAmarillo}</span></td>
+                        <td style="font-weight: 600; color:var(--amarillo-fc);">${txtArqAmar}</td>
+                    </tr>`;
 
-            // Sumar los goles recibidos de las listas para saber el total del partido
-            const gAmarillo = gcRojoLista.reduce((a, b) => a + b, 0); // Lo que recibe Rojo lo metió Amarillo
-            const gRojo = gcAmarilloLista.reduce((a, b) => a + b, 0); // Lo que recibe Amarillo lo metió Rojo
+                [...namesRojo, ...namesAmarillo].forEach(p => {
+                    let n = p.trim(); if(n) listadoGoleadores[n] = (listadoGoleadores[n] || 0) + 1;
+                });
 
-            // 2. Renderizar fila del Historial
-            htmlPartidos += `
-                <tr class="divide-x hover:bg-gray-50">
-                    <td class="p-3 text-gray-500">${fecha}</td>
-                    <td class="p-3 text-right font-bold text-red-600">${txtArqRojo}</td>
-                    <td class="p-3 text-center"><span class="bg-gray-800 text-white font-mono px-2 py-0.5 rounded text-xs">${gRojo} - ${gAmarillo}</span></td>
-                    <td class="p-3 font-bold text-yellow-600">${txtArqAmarillo}</td>
-                </tr>`;
+                const procesarBloqueArq = (nombres, goles) => {
+                    const cant = nombres.length; if (cant === 0) return;
+                    const porcionPartido = 1.0 / cant; 
+                    nombres.forEach((name, idx) => {
+                        if (!name) return;
+                        if (!listadoArqueros[name]) listadoArqueros[name] = { pj: 0, gc: 0 };
+                        listadoArqueros[name].pj += porcionPartido;
+                        listadoArqueros[name].gc += goles[idx] || 0;
+                    });
+                };
+                procesarBloqueArq(arqRojoLista, gcRojoLista);
+                procesarBloqueArq(arqAmarilloLista, gcAmarilloLista);
 
-            // 3. Procesar Tabla de Goleadores
-            [...namesRojo, ...namesAmarillo].forEach(player => {
-                let name = player.trim();
-                if(name) listadoGoleadores[name] = (listadoGoleadores[name] || 0) + 1;
+                statsEquipos.Rojo.PJ++; statsEquipos.Amarillo.PJ++;
+                statsEquipos.Rojo.GF += gRojo; statsEquipos.Rojo.GC += gAmarillo;
+                statsEquipos.Amarillo.GF += gAmarillo; statsEquipos.Amarillo.GC += gRojo;
+
+                if (gRojo > gAmarillo) { statsEquipos.Rojo.PG++; statsEquipos.Amarillo.PP++; }
+                else if (gAmarillo > gRojo) { statsEquipos.Amarillo.PG++; statsEquipos.Rojo.PP++; }
+                else { statsEquipos.Rojo.PE++; statsEquipos.Amarillo.PE++; }
+                
+                partidosProcesados++;
             });
 
-            // 4. FUNCIÓN PARA PROCESAR ARQUEROS DINÁMICAMENTE
-            const calcularBloqueArqueros = (listaNombres, listaGoles) => {
-                const totalCambios = listaNombres.length;
-                if (totalCambios === 0) return;
+            document.getElementById('table-partidos').innerHTML = htmlPartidos;
+            renderGoleadores();
+            renderArqueros();
+            renderEquipos();
+        }
 
-                // El "Partido Jugado" (1.0) se divide equitativamente entre los arqueros que entraron
-                const fraccionPartido = 1.0 / totalCambios; 
-
-                listaNombres.forEach((name, index) => {
-                    if (!name) return;
-                    if (!listadoArqueros[name]) listadoArqueros[name] = { pj: 0, gc: 0 };
-                    
-                    // Suma su parte proporcional del partido (ej: si son 2 arqueros, suma 0.5 PJ a cada uno)
-                    listadoArqueros[name].pj += fraccionPartido;
-                    // Suma los goles específicos que recibió en su turno
-                    listadoArqueros[name].gc += listaGoles[index] || 0; 
-                });
-            };
-
-            // Ejecutar procesamiento para ambos equipos
-            calcularBloqueArqueros(arqRojoLista, gcRojoLista);
-            calcularBloqueArqueros(arqAmarilloLista, gcAmarilloLista);
-
-            // 5. Estadísticas del color del Equipo
-            statsEquipos.Rojo.PJ++; statsEquipos.Amarillo.PJ++;
-            statsEquipos.Rojo.GF += gRojo; statsEquipos.Rojo.GC += gAmarillo;
-            statsEquipos.Amarillo.GF += gAmarillo; statsEquipos.Amarillo.GC += gRojo;
-
-            if (gRojo > gAmarillo) { statsEquipos.Rojo.PG++; statsEquipos.Amarillo.PP++; }
-            else if (gAmarillo > gRojo) { statsEquipos.Amarillo.PG++; statsEquipos.Rojo.PP++; }
-            else { statsEquipos.Rojo.PE++; statsEquipos.Amarillo.PE++; }
-        });
-
-        document.getElementById('table-partidos').innerHTML = htmlPartidos;
-        renderGoleadores();
-        renderArqueros();
-        renderEquipos();
-
-    } catch (e) { console.error("Error procesando estadísticas:", e); }
-}
