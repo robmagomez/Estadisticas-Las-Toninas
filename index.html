@@ -472,10 +472,35 @@
             }).join('');
         }
 
-        function handleFormSubmit() {
-            alert("⚽ ¡Estadísticas guardadas con éxito!");
-            document.getElementById('football-form').reset();
-            setTimeout(() => { switchProfile('viewer'); }, 500);
+                function handleFormSubmit() {
+            // 1. Evita que el navegador recargue la página o salte a la pantalla blanca de Google
+            if (event) event.preventDefault(); 
+            
+            const form = document.getElementById('football-form');
+            const formData = new FormData(form);
+            
+            // 2. Transforma los datos de las casillas en el formato que espera tu Apps Script
+            const searchParams = new URLSearchParams();
+            for (const pair of formData) {
+                searchParams.append(pair[0], pair[1]);
+            }
+
+            // 3. Envía los datos "por atrás" de forma invisible
+            fetch(form.action, {
+                method: 'POST',
+                body: searchParams,
+                mode: 'no-cors' // Evita bloqueos de seguridad entre GitHub y Google
+            })
+            .then(() => {
+                // 4. Cartel de éxito prolijo sin moverse de tu web
+                alert("⚽ ¡Estadísticas guardadas con éxito en tu Google Sheets!");
+                form.reset(); // Limpia los campos para el próximo partido
+                switchProfile('viewer'); // Te regresa automáticamente a ver las tablas
+            })
+            .catch(error => {
+                console.error("Error al enviar:", error);
+                alert("❌ Hubo un problema de conexión al guardar los datos.");
+            });
         }
 
         window.onload = fetchAndCalculate;
