@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas un Fútbol Distinto</title>
     <style>
-        /* ESTILOS ELEGANTES NATIVOS */
+        /* ESTILOS ELEGANTES NATIVOS (Cargan siempre, incluso sin internet) */
         :root {
             --bg-main: #f8fafc;
             --primary: #1e3a8a;
@@ -24,6 +24,7 @@
             padding: 0;
         }
 
+        /* Barra de navegación */
         nav {
             background-color: #0f172a;
             color: white;
@@ -49,6 +50,7 @@
         .btn-active { background-color: #2563eb !important; }
         .btn:hover { background-color: #475569; }
 
+        /* Pestañas */
         .tabs-container {
             background: white;
             display: flex;
@@ -72,6 +74,7 @@
             font-weight: 600;
         }
 
+        /* Contenedor principal */
         .container {
             max-width: 1000px;
             margin: 2rem auto;
@@ -87,14 +90,16 @@
             margin-bottom: 2rem;
         }
 
-        h2 { margin-top: 0; font-size: 1.4rem; color: #1e293b; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;}
+        h2 { margin-top: 0; font-size: 1.4rem; color: #1e293b; border-b: 2px solid var(--border-color); padding-bottom: 0.5rem;}
 
+        /* Tablas */
         .table-responsive { overflow-x: auto; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
         th { background-color: #f1f5f9; color: #475569; padding: 0.75rem 1rem; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
         td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
         tr:hover { background-color: #f8fafc; }
 
+        /* Marcador de goles en tablas */
         .badge-score {
             background: #1e293b;
             color: white;
@@ -105,15 +110,17 @@
             display: inline-block;
         }
 
+        /* Grid de Equipos */
         .grid-equipos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .card-team { border-left: 6px solid #cbd5e1; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-        .team-rojo { border-left-color: var(--rojo-fc); background: #fef2f2; }
-        .team-amarillo { border-left-color: var(--amarillo-fc); background: #fefce8; }
+        .card-team { border-left: 6px solid #cbd5e1; }
+        .team-rojo { border-left-color: var(--rojo-fc); }
+        .team-amarillo { border-left-color: var(--amarillo-fc); }
         
         .grid-stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; margin-top: 1rem; }
         .stat-box { background: #f1f5f9; padding: 0.5rem; border-radius: 6px; font-size: 0.8rem; }
         .stat-box b { display: block; font-size: 1rem; color: #0f172a; }
 
+        /* Formulario de carga */
         .form-group { margin-bottom: 1.25rem; }
         .form-group label { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: #475569; margin-bottom: 0.4rem; }
         .form-control {
@@ -126,7 +133,7 @@
             outline: none;
         }
         .form-control:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         
         .btn-submit {
             background-color: #2563eb;
@@ -142,59 +149,27 @@
         }
         .btn-submit:hover { background-color: #1d4ed8; }
         
-        /* Contenedores táctiles Android */
-        .flex-botones { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
-        
-        .btn-tactic {
-            background-color: white;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            padding: 0.4rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all 0.2s;
-        }
-        .btn-tactic-rojo:active { background-color: #fca5a5; }
-        .btn-tactic-amarillo:active { background-color: #fef08a; }
-        
-        .badge-count {
-            background: #64748b;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .text-preview { font-size: 0.8rem; margin-top: 0.25rem; font-style: italic; font-weight: bold; }
-
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-
-       <!-- NAVBAR (BARRA SUPERIOR) -->
-    <nav>
+    <!-- NAVBAR -->
+     <nav>
+        <!-- Contenedor para mantener juntos el logo y el título -->
         <div style="display: flex; align-items: center;">
-            <img src="Calco.png" width="50" height="50" style="margin-right: 0.75rem;" onerror="this.style.display='none'" />
+            <img src="Calco.png" width="50" height="50" style="margin-right: 0.75rem;" />
             <h1 style="margin: 0;">Estadísticas Las Toninas (un fútbol distinto)</h1>
         </div>
+        
+        <!-- Botones de navegación a la derecha -->
         <div style="display: flex; gap: 0.5rem;">
             <button onclick="switchProfile('viewer')" id="btn-view" class="btn btn-active">Vista Simple</button>
             <button onclick="switchProfile('admin')" id="btn-admin" class="btn">Cargar Datos</button>
         </div>
     </nav>
 
-    <!-- MENÚ DE PESTAÑAS (PÚBLICO) -->
+    <!-- MENÚ DE PESTAÑAS (VISTA SIMPLE) -->
     <div id="tabs-menu" class="tabs-container">
         <button onclick="switchTab('historial')" id="tab-historial" class="tab-btn active">Partidos</button>
         <button onclick="switchTab('goleadores')" id="tab-goleadores" class="tab-btn">Goleadores</button>
@@ -205,7 +180,7 @@
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="container">
         
-        <!-- ================= PERFIL: VISTA SIMPLE (TABLAS) ================= -->
+        <!-- ================= PERFIL VISTA SIMPLE ================= -->
         <div id="profile-viewer">
             
             <!-- PESTAÑA: HISTORIAL -->
@@ -239,143 +214,119 @@
                                 <th style="text-align: center;">Goles Totales</th>
                             </tr>
                         </thead>
-                        <tbody id="table-goleadores">
-                            <tr><td colspan="2" style="text-align:center; color:#64748b;">Procesando goleadores...</td></tr>
-                        </tbody>
+                        <tbody id="table-goleadores"></tbody>
                     </table>
                 </div>
             </section>
 
             <!-- PESTAÑA: ARQUEROS -->
             <section id="pane-arqueros" class="tab-pane card hidden">
-                <h2>🧤 Promedio Valla Menos Vencida</h2>
-                <div class="table-responsive" style="max-width: 500px;">
+                <h2>🧤 Ranking: Valla Menos Vencida</h2>
+                <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
                                 <th>Arquero</th>
+                                <th style="text-align: center;">Partidos Equiv.</th>
                                 <th style="text-align: center;">Goles Recibidos</th>
+                                <th style="text-align: center; background:#f1f5f9;">Promedio (G/P)</th>
                             </tr>
                         </thead>
-                        <tbody id="table-arqueros">
-                            <tr><td colspan="2" style="text-align:center; color:#64748b;">Calculando promedios...</td></tr>
-                        </tbody>
+                        <tbody id="table-arqueros"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- PESTAÑA: ESTADÍSTICAS ROJO VS AMARILLO -->
-            <section id="pane-equipos" class="tab-pane card hidden">
-                <h2>📊 Estadísticas por Equipo</h2>
-                <div class="grid-equipos">
-                    <div class="card-team team-rojo">
-                        <h3 style="margin:0; color:var(--rojo-fc);">🔴 Equipo Rojo</h3>
-                        <div class="grid-stats-mini">
-                            <div class="stat-box"><b id="goles-rojo">0</b>Goles Favor</div>
-                            <div class="stat-box"><b id="goles-rec-rojo">0</b>Goles Recib.</div>
-                            <div class="stat-box"><b id="dif-rojo">0</b>Diferencia</div>
-                        </div>
-                    </div>
-                    <div class="card-team team-amarillo">
-                        <h3 style="margin:0; color:#a16207;">🟡 Equipo Amarillo</h3>
-                        <div class="grid-stats-mini">
-                            <div class="stat-box"><b id="goles-amarillo">0</b>Goles Favor</div>
-                            <div class="stat-box"><b id="goles-rec-amarillo">0</b>Goles Recib.</div>
-                            <div class="stat-box"><b id="dif-amarillo">0</b>Diferencia</div>
-                        </div>
-                    </div>
-                </div>
+            <!-- PESTAÑA: EQUIPOS -->
+            <section id="pane-equipos" class="tab-pane hidden">
+                <h2 style="margin-bottom: 1.5rem;">📊 Rendimiento Global de Equipos</h2>
+                <div class="grid-equipos" id="cards-equipos"></div>
             </section>
         </div>
 
-        <!-- ================= PERFIL: ADMINISTRADOR (FORMULARIO DE CARGA) ================= -->
-        <div id="profile-admin" class="card hidden">
-            <h2>📝 Carga de Estadísticas de Partido</h2>
-            <form id="formularioPartido">
+                 <!-- ================= PERFIL CARGA (ADMIN) ================= -->
+        <div id="profile-admin" class="card hidden" style="max-width: 500px; margin: 0 auto;">
+            <h2>📝 Registrar Partido del Sábado</h2>
+            
+            <!-- REEMPLAZA ESTE ACTION CON TU URL DE APPS SCRIPT COPIADA -->
+            <form id="football-form" action="https://script.google.com/macros/s/AKfycbyr2U7l-3WHpMtSs0mC-HehipxikTwsIckFa5cf7S7Zz23ZnY3KebsaX7gvhQfs7X7GHQ/exec" onsubmit="handleFormSubmit()">
                 
                 <div class="form-group">
-                    <label for="fecha">Fecha del Encuentro</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control" required>
+                    <label>Fecha del Encuentro</label>
+                    <input type="date" name="fecha" required class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label style="color:var(--rojo-fc)">Goleadores Rojo (Separados por comas)</label>
+                    <input type="text" name="goleadoresRojo" placeholder="Ej: Carlos, Carlos, Miguel" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label style="color:var(--amarillo-fc)">Goleadores Amarillo (Separados por comas)</label>
+                    <input type="text" name="goleadoresAmarillo" placeholder="Ej: Juan, Luis" class="form-control">
                 </div>
 
                 <div class="grid-2">
-                    <!-- PANEL EQUIPO ROJO -->
-                    <div class="card-team team-rojo">
-                        <h3 style="margin:0 0 1rem 0; font-size:1.1rem; color:var(--rojo-fc);">🔴 Lado Rojo</h3>
-                        <div class="form-group">
-                            <label>⚽ Goleadores Rojo (Toca para sumar)</label>
-                            <div id="btn-goleadores-rojo" class="flex-botones"></div>
-                            <div class="text-preview text-danger">Selección: <span id="preview-goles-rojo">-</span></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="arquerosRojo">Arquero(s) Rojo</label>
-                            <input type="text" id="arquerosRojo" name="arquerosRojo" class="form-control" placeholder="Ej: Nico, Alexis" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="golesRojo">Goles Recibidos por Rojo</label>
-                            <input type="number" id="golesRojo" name="golesRojo" class="form-control" min="0" required>
-                        </div>
+                    <div class="form-group">
+                        <label style="color:var(--rojo-fc)">Arquero(s) Rojo</label>
+                        <input type="text" name="arquerosRojo" placeholder="Ej: Pedro, Carlos" required class="form-control">
                     </div>
-
-                    <!-- PANEL EQUIPO AMARILLO -->
-                    <div class="card-team team-amarillo">
-                        <h3 style="margin:0 0 1rem 0; font-size:1.1rem; color:#a16207;">🟡 Lado Amarillo</h3>
-                        <div class="form-group">
-                            <label>⚽ Goleadores Amarillo (Toca para sumar)</label>
-                            <div id="btn-goleadores-amarillo" class="flex-botones"></div>
-                            <div class="text-preview" style="color:#a16207;">Selección: <span id="preview-goles-amarillo">-</span></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="arquerosAmarillo">Arquero(s) Amarillo</label>
-                            <input type="text" id="arquerosAmarillo" name="arquerosAmarillo" class="form-control" placeholder="Ej: Oso" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="golesAmarillo">Goles Recibidos por Amarillo</label>
-                            <input type="number" id="golesAmarillo" name="golesAmarillo" class="form-control" min="0" required>
-                        </div>
+                    <div class="form-group">
+                        <label style="color:var(--rojo-fc)">Goles Recibidos c/u</label>
+                        <input type="text" name="golesRojo" placeholder="Ej: 1, 2" required class="form-control">
                     </div>
                 </div>
 
-                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                    <button type="submit" class="btn-submit">💾 Guardar Partido</button>
-                    <button type="button" class="btn" style="background-color:#94a3b8;" onclick="reinicioCargaRapida()">🔄 Resetear Cuentas</button>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label style="color:var(--amarillo-fc)">Arquero(s) Amarillo</label>
+                        <input type="text" name="arquerosAmarillo" placeholder="Ej: Lucas" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label style="color:var(--amarillo-fc)">Goles Recibidos c/u</label>
+                        <input type="text" name="golesAmarillo" placeholder="Ej: 4" required class="form-control">
+                    </div>
                 </div>
+
+                <button type="submit" class="btn-submit">Guardar Estadísticas</button>
             </form>
+            <iframe name="_hidden_iframe" id="_hidden_iframe" style="display:none;"></iframe>
         </div>
+
+
     </div>
 
    
         
 
-        <!-- SCRIPT LÓGICO COMPLETO, INTEGRADO Y TOTALMENTE CERRADO -->
+    <!-- SCRIPT LOGICO COMPLETO Y UNIFICADO -->
     <script>
-        // CONFIGURACIÓN: Tus URLs del ecosistema Google Sheets
-        const SHEET_CSV_URL = "https://google.com";
-        const SCRIPT_URL = "https://google.com";
+        // CONFIGURACIÓN: Tu URL pública de Google Sheets en formato CSV
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQO8umHK3ldtXP_1sau24mw0tywHAgQA4jlQlxyI847DAuF-4k7YETRvHnb8dCuSxo0_smo3UYkrn2e/pub?output=csv";
 
         let listadoGoleadores = {};
         let listadoArqueros = {};
-        let statsEquipos = { Rojo: { PJ:0, GF:0, GC:0 }, Amarillo: { PJ:0, GF:0, GC:0 } };
-        
-        let listadoGolesRojo = [];
-        let listadoGolesAmarillo = [];
+        let statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
 
-        // Colocar la fecha del día actual por defecto
-        document.getElementById('fecha').value = new Date().toISOString().substring(0, 10);
-
-        function switchProfile(profile) {
+               function switchProfile(profile) {
             if (profile === 'admin') {
+                // CONFIGURACIÓN: Cambia "toninas2026" por la contraseña que tú quieras
                 const contrasenaCorrecta = "toninas2026"; 
+                
                 const intento = prompt("🔒 Ingrese la contraseña de administrador para cargar datos:");
+                
                 if (intento !== contrasenaCorrecta) {
                     alert("❌ Contraseña incorrecta. Acceso denegado.");
-                    switchProfile('viewer');
+                    switchProfile('viewer'); // Te regresa de forma segura a la vista simple
                     return;
                 }
             }
+
+            // Si pasa la validación o elige ver datos, hace el cambio de pantalla normal
             document.getElementById('profile-viewer').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('tabs-menu').classList.toggle('hidden', profile !== 'viewer');
             document.getElementById('profile-admin').classList.toggle('hidden', profile !== 'admin');
+            
             document.getElementById('btn-view').classList.toggle('btn-active', profile === 'viewer');
             document.getElementById('btn-admin').classList.toggle('btn-active', profile === 'admin');
             if(profile === 'viewer') fetchAndCalculate();
@@ -384,21 +335,23 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
             document.getElementById(`pane-${tabId}`).classList.remove('hidden');
+            
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        // 1. SINCRONIZACIÓN CSV: Descarga e integra el historial público de tablas
         async function fetchAndCalculate() {
-            if(!SHEET_CSV_URL) return;
+            if(!SHEET_CSV_URL || SHEET_CSV_URL.startsWith("TU_")) return;
+
             try {
-                const response = await fetch(SHEET_CSV_URL + "&t=" + new Date().getTime()); 
+                const response = await fetch(SHEET_CSV_URL + "&t=" + new Date().getTime()); // Evita que el navegador congele los datos viejos
                 const data = await response.text();
+                
                 const rows = data.split(/\r?\n/).slice(1);
 
                 listadoGoleadores = {}; 
                 listadoArqueros = {};
-                statsEquipos = { Rojo: { PJ:0, GF:0, GC:0 }, Amarillo: { PJ:0, GF:0, GC:0 } };
+                statsEquipos = { Rojo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 }, Amarillo: { PJ:0, PG:0, PE:0, PP:0, GF:0, GC:0 } };
                 let htmlPartidos = '';
                 let partidosProcesados = 0;
 
@@ -457,19 +410,27 @@
                     statsEquipos.Rojo.PJ++; statsEquipos.Amarillo.PJ++;
                     statsEquipos.Rojo.GF += gRojo; statsEquipos.Rojo.GC += gAmarillo;
                     statsEquipos.Amarillo.GF += gAmarillo; statsEquipos.Amarillo.GC += gRojo;
+
+                    if (gRojo > gAmarillo) { statsEquipos.Rojo.PG++; statsEquipos.Amarillo.PP++; }
+                    else if (gAmarillo > gRojo) { statsEquipos.Amarillo.PG++; statsEquipos.Rojo.PP++; }
+                    else { statsEquipos.Rojo.PE++; statsEquipos.Amarillo.PE++; }
                     
                     partidosProcesados++;
                 });
 
-                document.getElementById('table-partidos').innerHTML = partidosProcesados === 0 ? 
-                    `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:2rem;">Sin partidos.</td></tr>` : htmlPartidos;
+                if (partidosProcesados === 0) {
+                    document.getElementById('table-partidos').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:2rem;">La planilla está conectada con éxito, pero aún no has registrado ningún partido en tu Google Sheets.</td></tr>`;
+                } else {
+                    document.getElementById('table-partidos').innerHTML = htmlPartidos;
+                }
                 
                 renderGoleadores();
                 renderArqueros();
                 renderEquipos();
+
             } catch (e) { 
                 console.error(e);
-                document.getElementById('table-partidos').innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--rojo-fc);">Error al sincronizar con Sheets.</td></tr>`;
+                document.getElementById('table-partidos').innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--rojo-fc);">Error al intentar sincronizar con Google Sheets.</td></tr>`;
             }
         }
 
@@ -483,94 +444,69 @@
         function renderArqueros() {
             const sorted = Object.entries(listadoArqueros).sort((a,b) => (a[1].gc / a[1].pj) - (b[1].gc / b[1].pj));
             document.getElementById('table-arqueros').innerHTML = sorted.map(([name, d]) => `
-                <tr><td><b>${name}</b></td><td style="text-align: center; font-weight: bold; color:#10b981;">${(d.gc / d.pj).toFixed(2)}</td></tr>
+                <tr>
+                    <td><b>${name}</b></td>
+                    <td style="text-align: center;">${d.pj.toFixed(1)}</td>
+                    <td style="text-align: center; color:var(--rojo-fc);">${d.gc}</td>
+                    <td style="text-align: center; font-weight: bold; background:#f8fafc; color:#0f172a;">${(d.gc / d.pj).toFixed(2)}</td>
+                </tr>
             `).join('');
         }
 
         function renderEquipos() {
-            document.getElementById('goles-rojo').innerText = statsEquipos.Rojo.GF;
-            document.getElementById('goles-rec-rojo').innerText = statsEquipos.Rojo.GC;
-            document.getElementById('dif-rojo').innerText = statsEquipos.Rojo.GF - statsEquipos.Rojo.GC;
-            document.getElementById('goles-amarillo').innerText = statsEquipos.Amarillo.GF;
-            document.getElementById('goles-rec-amarillo').innerText = statsEquipos.Amarillo.GC;
-            document.getElementById('dif-amarillo').innerText = statsEquipos.Amarillo.GF - statsEquipos.Amarillo.GC;
+            document.getElementById('cards-equipos').innerHTML = ['Rojo', 'Amarillo'].map(color => {
+                const e = statsEquipos[color];
+                const cls = color === 'Rojo' ? 'team-rojo' : 'team-amarillo';
+                return `
+                    <div class="card card-team ${cls}">
+                        <h3 style="margin:0; font-size:1.2rem;">Equipo ${color}</h3>
+                        <div class="grid-stats-mini">
+                            <div class="stat-box"><b>${e.PJ}</b>PJ</div>
+                            <div class="stat-box" style="background:#dcfce7; color:#166534;"><b>${e.PG}</b>PG</div>
+                            <div class="stat-box" style="background:#fef9c3; color:#854d0e;"><b>${e.PE}</b>PE</div>
+                            <div class="stat-box" style="background:#fee2e2; color:#991b1b;"><b>${e.PP}</b>PP</div>
+                            <div class="stat-box"><b>${e.GF}</b>GF</div>
+                            <div class="stat-box"><b>${e.GC}</b>GC</div>
+                        </div>
+                    </div>`;
+            }).join('');
         }
 
-        // 2. CARGA DINÁMICA: Trae los jugadores reales para fabricar los botones
-        async function descargarListaDeJugadores() {
-            try {
-                const res = await fetch(`${SCRIPT_URL}?action=getJugadores`);
-                const jugadores = await res.json();
-                jugadores.sort().forEach(nombre => crearEstructuraBotones(nombre));
-            } catch (error) {
-                console.error("Error cargando base de jugadores:", error);
+                function handleFormSubmit() {
+            // 1. Evita que el navegador recargue la página o salte a la pantalla blanca de Google
+            if (event) event.preventDefault(); 
+            
+            const form = document.getElementById('football-form');
+            const formData = new FormData(form);
+            
+            // 2. Transforma los datos de las casillas en el formato que espera tu Apps Script
+            const searchParams = new URLSearchParams();
+            for (const pair of formData) {
+                searchParams.append(pair[0], pair[1]);
             }
-        }
 
-        function crearEstructuraBotones(nombre) {
-            const wrapperRojo = document.getElementById('btn-goleadores-rojo');
-            const wrapperAmarillo = document.getElementById('btn-goleadores-amarillo');
-
-            let btnR = document.createElement('button');
-            btnR.type = 'button'; btnR.className = 'btn-tactic btn-tactic-rojo';
-            btnR.innerHTML = `${nombre} <span class="badge-count" id="badge-r-${nombre}">0</span>`;
-            btnR.onclick = () => procesarClicGol('rojo', nombre);
-            wrapperRojo.appendChild(btnR);
-
-            let btnA = document.createElement('button');
-            btnA.type = 'button'; btnA.className = 'btn-tactic btn-tactic-amarillo';
-            btnA.innerHTML = `${nombre} <span class="badge-count" id="badge-a-${nombre}">0</span>`;
-            btnA.onclick = () => procesarClicGol('amarillo', nombre);
-            wrapperAmarillo.appendChild(btnA);
-        }
-
-        function procesarClicGol(bando, jugador) {
-            if(bando === 'rojo') {
-                listadoGolesRojo.push(jugador);
-                document.getElementById('preview-goles-rojo').innerText = listadoGolesRojo.join(', ');
-                document.getElementById(badge-r-${jugador}).innerText = listadoGolesRojo.filter(x => x === jugador).length;
-            } else {
-                listadoGolesAmarillo.push(jugador);
-                document.getElementById('preview-goles-amarillo').innerText = listadoGolesAmarillo.join(', ');
-                document.getElementById(badge-a-${jugador}).innerText = listadoGolesAmarillo.filter(x => x === jugador).length;
-                }
-        }
-        function reinicioCargaRapida() {
-            listadoGolesRojo = []; 
-            listadoGolesAmarillo = [];document.getElementById('preview-goles-rojo').innerText = '-';
-            document.getElementById('preview-goles-amarillo').innerText = '-';document.querySelectorAll('.badge-count').forEach(badge => badge.innerText = '0');
-        }
-
-// 3. ENVÍO DE FORMULARIO POST PROCESADO AUTOMÁTICAMENTE
-
-        document.getElementById('formularioPartido').onsubmit = async function(e) {
-        e.preventDefault();
-        const datos = new URLSearchParams();
-        datos.append('fecha', document.getElementById('fecha').value);
-        datos.append('goleadoresRojo', listadoGolesRojo.join(', '));
-        datos.append('goleadoresAmarillo', listadoGolesAmarillo.join(', '));
-        datos.append('arquerosRojo', document.getElementById('arquerosRojo').value);
-        datos.append('golesRojo', document.getElementById('golesRojo').value);
-        datos.append('arquerosAmarillo', document.getElementById('arquerosAmarillo').value);
-        datos.append('golesAmarillo', document.getElementById('golesAmarillo').value);
-        try {
-            const response = await fetch(SCRIPT_URL, {
-            method: 'POST', body: datos,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            // 3. Envía los datos "por atrás" de forma invisible
+            fetch(form.action, {
+                method: 'POST',
+                body: searchParams,
+                mode: 'no-cors' // Evita bloqueos de seguridad entre GitHub y Google
+            })
+            .then(() => {
+                // 4. Cartel de éxito prolijo sin moverse de tu web
+                alert("⚽ ¡Estadísticas guardadas con éxito en tu Google Sheets!");
+                form.reset(); // Limpia los campos para el próximo partido
+                switchProfile('viewer'); // Te regresa automáticamente a ver las tablas
+            })
+            .catch(error => {
+                console.error("Error al enviar:", error);
+                alert("❌ Hubo un problema de conexión al guardar los datos.");
             });
-        if(response.ok) {
-            alert("⚽ ¡Estadísticas subidas con éxito!");
-            reinicioCargaRapida();
-            document.getElementById('arquerosRojo').value = '';
-            document.getElementById('golesRojo').value = '';
-            document.getElementById('arquerosAmarillo').value = '';
-            document.getElementById('golesAmarillo').value = '';
-            switchProfile('viewer');
         }
-        } catch (err) { alert("Error al intentar conectarse al servidor."); }
-    };
-    window.onload = () => { fetchAndCalculate(); descargarListaDeJugadores(); };
-</script>
+
+        window.onload = fetchAndCalculate;
+        
+
+    </script>
 </body>
 </html>
 
